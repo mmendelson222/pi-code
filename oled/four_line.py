@@ -6,6 +6,8 @@
 # Adafruit Blinka to support CircuitPython libraries. CircuitPython does
 # not support PIL/pillow (python imaging library)!
 
+# use a simple button to rotate through lines of text. 
+
 import time
 import subprocess
 
@@ -15,6 +17,9 @@ import busio
 from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 import digitalio
+
+# Define the Reset Pin
+oled_reset = digitalio.DigitalInOut(board.D4)
 
 button1 = digitalio.DigitalInOut(board.D26)
 button1.direction = digitalio.Direction.INPUT
@@ -26,7 +31,7 @@ i2c = busio.I2C(SCL, SDA)
 # Create the SSD1306 OLED class.
 # The first two parameters are the pixel width and pixel height.  Change these
 # to the right size for your display!
-disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, addr=0x3d)
+disp = adafruit_ssd1306.SSD1306_I2C(128, 32, i2c, addr=0x3d, reset=oled_reset)
 
 # Clear display.
 disp.fill(0)
@@ -43,7 +48,7 @@ draw = ImageDraw.Draw(image)
 
 # Draw a black filled box to clear the image.
 draw.rectangle((0, 0, width, height), outline=0, fill=0)
-top = 0
+top = -2
 left = 0
 
 #font = ImageFont.load_default()
@@ -55,8 +60,8 @@ def draw_screen(start_item, lines):
 
     # Write four lines of text.
     for i in range(4):
-        display_item = (i    + startat) % len(lines) 
-        draw.text((left, top + i*8), lines[display_item], font=font, fill=255)
+        display_item = (i + startat) % len(lines) 
+        draw.text((left, top + i*8), f'{display_item+1}. {lines[display_item]}', font=font, fill=255)
     
     # Display image.
     disp.image(image)
