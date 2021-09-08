@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont
 import adafruit_ssd1306
 import digitalio as dio
 from adafruit_seesaw import seesaw, rotaryio, digitalio
+import gsp
 
 seesaw = seesaw.Seesaw(board.I2C(), addr=0x36)
 
@@ -40,8 +41,10 @@ def draw_screen(start_item):
     disp.image(image)
     disp.show()
 
-message = "Item one\nItem two \nItem three\nItem four\nNumber five"
-lines = message.split("\n")
+#message = "Item one\nItem two \nItem three\nItem four\nNumber five"
+#lines = message.split("\n")
+
+lines = gsp.get_tasks()
 start_line = 0          #text item
 rotary_position = 0     #rotary position
 start_line_orig = None  #this will force the first image to be drawn
@@ -50,7 +53,7 @@ while True:
     if button.value:                # Down button is False
         button_pressed = False
     elif not button_pressed:        # it's a new button press!
-        start_line += 1
+        lines = gsp.get_tasks()
         button_pressed = True
         draw_screen(start_line)
     
