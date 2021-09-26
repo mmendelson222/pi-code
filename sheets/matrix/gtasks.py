@@ -3,7 +3,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import json 
 import os
 
-DIR = os.environ["HOME"]
+DIR = "/home/pi" #os.environ["HOME"]
 
 scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
 creds = ServiceAccountCredentials.from_json_keyfile_name(DIR + '/.ssh/task_list.json', scope)
@@ -34,7 +34,8 @@ def get_tasks():
 			t["priority"] = 999
 		tasks.append(t)
 	sorted_tasks = sorted(tasks, key=lambda k: k['priority']) 
-	return sorted_tasks
+	#return an array of strings.
+	return list(o["task"] for o in sorted_tasks)
 
 if __name__ == "__main__":
 	tasks = get_tasks()
