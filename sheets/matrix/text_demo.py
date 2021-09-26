@@ -36,10 +36,9 @@ class RunText(SampleBase):
         font_height = 6
         while True:
             offscreen_canvas.Clear()
+            ypos = font_height 
 
-            len = 0
-            ypos = 6 # position of time line 
-
+            len = 0 #used for scrolling
             for t in self.display_lines:
                 len = max(graphics.DrawText(offscreen_canvas, font, xpos, ypos, textColor, t), len)
                 ypos += (font_height)
