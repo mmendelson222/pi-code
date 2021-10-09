@@ -39,12 +39,12 @@ class RunText(SampleBase):
             len = 0 #used for scrolling
             for t in display_lines:
                 len = max(graphics.DrawText(offscreen_canvas, font, xpos, ypos, textColor, t), len)
-                ypos += (font_height)
+                ypos += font_height
             if scroll:
                 xpos -= 1
                 if (xpos + len < 0):
                     xpos = offscreen_canvas.width
-            time.sleep(0.03)  #higher = slower
+            time.sleep(0.03)  #higher = slower scroll
             offscreen_canvas = self.matrix.SwapOnVSync(offscreen_canvas)
 
     def list_fonts(self):
@@ -54,26 +54,26 @@ class RunText(SampleBase):
             print(count, f)
             count += 1
 
+    # allow us to choose a font by index.
     def choose_font(self, id):
         file_list=glob.glob(FILTER)
         print(FILTER)
         if (id >= len(file_list)):
-            print("file id too large")
+            raise Exception(f"File index too large - {len(file_list)} font files present.")
         return file_list[id]
 
 
 # create render thread
 def start_threaded():
     q = Queue()
-    q.put(["Hello there."])
+    q.put(gtasks.get_tasks())
     run_text = RunText()
     render_thread = threading.Thread(target=run_text.process, args=[q], name="render_thread", daemon=True)
     time.sleep(1)
     render_thread.start()
     while render_thread.is_alive():
         time.sleep(5)
-        tasks = gtasks.get_tasks()
-        q.put(tasks)
+        q.put(gtasks.get_tasks())
 
 def __refresh_offday(render_thread, data):  # type: (threading.Thread, Data) -> None
     debug.log("Main has selected the offday information to refresh")
